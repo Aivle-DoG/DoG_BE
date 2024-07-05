@@ -6,7 +6,7 @@ import lombok.Data;
 public class Message {
     private StateEnum status;
     private String message;
-    private String data;
+    private Object data;
 
     public Message() {
         this.status = StateEnum.BAD_REQUEST;

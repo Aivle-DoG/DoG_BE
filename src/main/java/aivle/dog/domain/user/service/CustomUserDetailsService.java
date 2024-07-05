@@ -24,12 +24,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("loadUserByUsername : " + username);
         //DB에서 조회
-        User userData = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not exist with name :" + username));
 
-        if (userData != null) {
-
+        if (user != null) {
             //UserDetails에 담아서 return하면 AutneticationManager가 검증 함
-            return new CustomUserDetails(userData);
+            return new CustomUserDetails(user);
         }
         throw new
                 UsernameNotFoundException("User not exist with name :" + username);
