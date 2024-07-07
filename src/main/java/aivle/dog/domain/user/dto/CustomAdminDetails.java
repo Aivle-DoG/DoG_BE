@@ -1,6 +1,6 @@
 package aivle.dog.domain.user.dto;
 
-import aivle.dog.domain.user.entity.User;
+import aivle.dog.domain.user.entity.Admin;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,18 +8,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class CustomUserDetails implements UserDetails {
-    private final User user;
+public class CustomAdminDetails implements UserDetails {
+    private final Admin admin;
 
-    public CustomUserDetails(User user) {
-        this.user = user;
+    public CustomAdminDetails(Admin admin) {
+        this.admin = admin;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         Collection<GrantedAuthority> collection = new ArrayList<>();
-
+        collection.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         collection.add(new SimpleGrantedAuthority("ROLE_USER"));
 
         return collection;
@@ -27,12 +27,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return admin.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return admin.getUsername();
     }
 
     @Override

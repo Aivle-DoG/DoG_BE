@@ -1,11 +1,14 @@
 package aivle.dog.security.jwt;
 
+import aivle.dog.domain.user.dto.CustomAdminDetails;
 import aivle.dog.domain.user.dto.CustomUserDetails;
+import aivle.dog.domain.user.entity.Admin;
 import aivle.dog.domain.user.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Log4j2
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
@@ -27,7 +31,7 @@ public class JWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         //request에서 Authorization 헤더를 찾음
-        String authorization= request.getHeader("Authorization");
+        String authorization = request.getHeader("Authorization");
 
         //Authorization 헤더 검증
         if (authorization == null || !authorization.startsWith("Bearer ")) {
@@ -57,14 +61,21 @@ public class JWTFilter extends OncePerRequestFilter {
         String username = jwtUtil.getUsername(token);
         String role = jwtUtil.getRole(token);
 
-        //userEntity를 생성하여 값 set
-        User userEntity = User.builder().username(username).password("temppassword").build();
+        log.info("doFilterInternal" + role);
 
-        //UserDetails에 회원 정보 객체 담기
-        CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
-
-        //스프링 시큐리티 인증 토큰 생성
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+        Authentication authToken = null;
+        if (role.equals("ROLE_USER")) {
+            //userEntity를 생성하여 값 set            
+            User user = User.builder().username(username).password("temppassword").build();
+            //UserDetails에 회원 정보 객체 담기
+            CustomUserDetails customUserDetails = new CustomUserDetails(user);
+            //스프링 시큐리티 인증 토큰 생성
+            authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+        } else if (role.contains("ROLE_ADMIN")) {
+            Admin admin = Admin.builder().username(username).password("temppassword").build();
+            CustomAdminDetails customAdminDetails = new CustomAdminDetails(admin);
+            authToken = new UsernamePasswordAuthenticationToken(customAdminDetails, null, customAdminDetails.getAuthorities());
+        }
         //세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
