@@ -22,8 +22,8 @@ public class BoardService {
     }
 
     @Transactional
-    public Integer postBoard(BoardDto boardDto) {
-        User user = userRepository.findByUsername(boardDto.getUsername())
+    public Integer postBoard(BoardDto boardDto, String username) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("없는 사용자입니다"));
 
         boardRepository.save(Board.builder()
@@ -48,11 +48,11 @@ public class BoardService {
     }
 
     @Transactional
-    public int patchBoard(Long boardId, BoardDto boardDto) {
+    public int patchBoard(Long boardId, BoardDto boardDto, String username) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("없는 게시글입니다"));
 
-        User user = userRepository.findByUsername(boardDto.getUsername())
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("없는 사용자입니다"));
 
         if (!board.getUser().getUsername().equals(user.getUsername()))

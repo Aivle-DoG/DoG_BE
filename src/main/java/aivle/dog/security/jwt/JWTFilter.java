@@ -15,6 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @Log4j2
 public class JWTFilter extends OncePerRequestFilter {
@@ -43,7 +45,6 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        System.out.println("authorization now");
         //Bearer 부분 제거 후 순수 토큰만 획득
         String token = authorization.split(" ")[1];
 
@@ -59,22 +60,28 @@ public class JWTFilter extends OncePerRequestFilter {
 
         //토큰에서 username과 role 획득
         String username = jwtUtil.getUsername(token);
-        String role = jwtUtil.getRole(token);
+        String[] rolesArray = jwtUtil.getRole(token).substring(1, jwtUtil.getRole(token).length() - 1).split(", ");
 
-        log.info("doFilterInternal" + role);
+        // ArrayList에 권한 추가
+        ArrayList<String> roles = new ArrayList<>(Arrays.asList(rolesArray));
+
+        log.info("JWTFilter/doFilterInternal : " + username);
+        log.info("JWTFilter/doFilterInternal : " + roles);
 
         Authentication authToken = null;
-        if (role.equals("ROLE_USER")) {
+        if (roles.contains("ROLE_USER")) {
             //userEntity를 생성하여 값 set            
             User user = User.builder().username(username).password("temppassword").build();
             //UserDetails에 회원 정보 객체 담기
             CustomUserDetails customUserDetails = new CustomUserDetails(user);
             //스프링 시큐리티 인증 토큰 생성
             authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-        } else if (role.contains("ROLE_ADMIN")) {
+        } else if (roles.contains("ROLE_ADMIN")) {
             Admin admin = Admin.builder().username(username).password("temppassword").build();
             CustomAdminDetails customAdminDetails = new CustomAdminDetails(admin);
             authToken = new UsernamePasswordAuthenticationToken(customAdminDetails, null, customAdminDetails.getAuthorities());
+        } else{
+            log.info("올바르지 않은 권한");
         }
         //세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);

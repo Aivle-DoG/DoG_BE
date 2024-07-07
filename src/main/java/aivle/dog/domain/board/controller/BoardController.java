@@ -3,10 +3,12 @@ package aivle.dog.domain.board.controller;
 import aivle.dog.domain.board.dto.BoardDto;
 import aivle.dog.domain.board.dto.BoardResponseDto;
 import aivle.dog.domain.board.service.BoardService;
+import aivle.dog.domain.user.dto.CustomUserDetails;
 import aivle.dog.global.Message;
 import aivle.dog.global.StateEnum;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,13 +23,13 @@ public class BoardController {
     }
 
     @PostMapping("/board")
-    public ResponseEntity<Message> postBoard(@RequestBody BoardDto boardDto) {
+    public ResponseEntity<Message> postBoard(@RequestBody BoardDto boardDto, @AuthenticationPrincipal CustomUserDetails user) {
         log.info("BoardController/postBoard : " + boardDto);
-
+        log.info("BoardController/postBoard : " + user.getUsername());
         Message message = new Message();
 
         try {
-            int code = boardService.postBoard(boardDto);
+            int code = boardService.postBoard(boardDto, user.getUsername());
             message.setStatus(StateEnum.OK);
             message.setMessage("게시글 등록 성공");
             message.setData(String.valueOf(code));
@@ -40,7 +42,7 @@ public class BoardController {
     }
 
     @GetMapping("/board/{boardId}")
-    public ResponseEntity<Message> getBoard (@PathVariable("boardId") Long boardId){
+    public ResponseEntity<Message> getBoard(@PathVariable("boardId") Long boardId) {
         log.info("BoardController/getBoard : " + boardId);
 
         Message message = new Message();
@@ -60,14 +62,15 @@ public class BoardController {
     }
 
     @PatchMapping("/board/{boardId}")
-    public ResponseEntity<Message> patchBoard(@PathVariable Long boardId, @RequestBody BoardDto boardDto) {
+    public ResponseEntity<Message> patchBoard(@PathVariable Long boardId, @RequestBody BoardDto boardDto, @AuthenticationPrincipal CustomUserDetails user) {
         log.info("BoardController/patchBoard = boardDto : " + boardDto);
         log.info("BoardController/patchBoard = boardId : " + boardId);
+        log.info("BoardController/patchBoard = user : " + user.getUsername());
 
         Message message = new Message();
 
         try {
-            int code = boardService.patchBoard(boardId, boardDto);
+            int code = boardService.patchBoard(boardId, boardDto, user.getUsername());
             message.setStatus(StateEnum.OK);
             message.setMessage("게시글 수정 성공");
             message.setData(String.valueOf(code));
@@ -80,14 +83,13 @@ public class BoardController {
     }
 
     @DeleteMapping("/board/{boardId}")
-    public ResponseEntity<Message> deleteBoard(@PathVariable Long boardId, @RequestParam String username) {
-        log.info("BoardController/deleteBoard = username : " + username);
+    public ResponseEntity<Message> deleteBoard(@PathVariable Long boardId, @AuthenticationPrincipal CustomUserDetails user) {
         log.info("BoardController/deleteBoard =  boardId : " + boardId);
-
+        log.info("BoardController/deleteBoard =  user : " + user.getUsername());
         Message message = new Message();
 
         try {
-            int code = boardService.deleteBoard(boardId, username);
+            int code = boardService.deleteBoard(boardId, user.getUsername());
             message.setStatus(StateEnum.OK);
             message.setMessage("게시글 삭제 성공");
             message.setData(String.valueOf(code));

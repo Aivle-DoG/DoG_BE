@@ -10,5 +10,4 @@ import lombok.*;
 public class BoardDto {
     private String title;
     private String description;
-    private String username;
 }
