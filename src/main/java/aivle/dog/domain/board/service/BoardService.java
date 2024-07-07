@@ -3,8 +3,10 @@ package aivle.dog.domain.board.service;
 import aivle.dog.domain.board.dto.BoardDto;
 import aivle.dog.domain.board.dto.BoardListResponseDto;
 import aivle.dog.domain.board.dto.BoardResponseDto;
+import aivle.dog.domain.board.dto.CommentResponseDto;
 import aivle.dog.domain.board.entity.Board;
 import aivle.dog.domain.board.repository.BoardRepository;
+import aivle.dog.domain.board.repository.CommentRepository;
 import aivle.dog.domain.user.entity.User;
 import aivle.dog.domain.user.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
@@ -13,15 +15,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Log4j2
 @Service
 public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
-    public BoardService(BoardRepository boardRepository, UserRepository userRepository) {
+    public BoardService(BoardRepository boardRepository, UserRepository userRepository, CommentRepository commentRepository) {
         this.boardRepository = boardRepository;
         this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Transactional
@@ -41,12 +47,14 @@ public class BoardService {
     public BoardResponseDto getBoard(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("없는 게시글입니다"));
+        List<CommentResponseDto> comments = commentRepository.getCommentsByBoardId(boardId);
         return BoardResponseDto.builder()
                 .title(board.getTitle())
                 .description(board.getDescription())
                 .username(board.getUser().getUsername())
-                .modifiedAt(board.getModifiedAt())
-                .viewCount(board.getViewCount())
+                .createdAt(board.getCreatedAt())
+                .viewCount(board.getViewCount() + 1)
+                .comments(comments)
                 .build();
     }
 
