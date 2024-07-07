@@ -6,10 +6,10 @@ public enum StateEnum {
     INTERNAL_SERVER_ERROR(500, "INTERNAL_SERVER_ERROR");
 
     int statusCode;
-    String code;;
+    String code;
 
     StateEnum(int statusCode, String code) {
         this.statusCode = statusCode;
         this.code = code;
     }
-    }
+}

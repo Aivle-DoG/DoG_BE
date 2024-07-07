@@ -11,6 +11,8 @@ import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.Objects;
+
 @Entity
 @Getter
 @Table
@@ -29,11 +31,16 @@ public class Board extends BaseTimeEntity {
     private User user;
 
     @NotNull
-    @Column
+    @Column(length = 10)
+    @Enumerated(EnumType.STRING)
+    private InquiryType inquiryType;
+
+    @NotNull
+    @Column(length = 50)
     private String title;
 
     @NotNull
-    @Column
+    @Column(length = 1000)
     private String description;
 
     @NotNull
@@ -41,8 +48,9 @@ public class Board extends BaseTimeEntity {
     private Long viewCount;
 
     @Builder
-    public Board(User user, String title, String description, Long viewCount) {
+    public Board(User user, InquiryType inquiryType, String title, String description, Long viewCount) {
         this.user = user;
+        this.inquiryType = Objects.requireNonNullElse(inquiryType, InquiryType.ETC);
         this.title = title;
         this.description = description;
         this.viewCount = viewCount;

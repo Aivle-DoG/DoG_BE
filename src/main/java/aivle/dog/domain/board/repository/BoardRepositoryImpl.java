@@ -26,8 +26,9 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         List<BoardListResponseDto> boardListResponseDtoList = queryFactory
                 .select(Projections.constructor(BoardListResponseDto.class,
                         board.id,
+                        board.inquiryType,
                         board.title,
-                        board.modifiedAt,
+                        board.createdAt,
                         board.viewCount))
                 .from(board)
                 .offset(pageable.getOffset())

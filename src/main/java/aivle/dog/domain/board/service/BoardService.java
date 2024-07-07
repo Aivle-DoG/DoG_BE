@@ -5,10 +5,12 @@ import aivle.dog.domain.board.dto.BoardListResponseDto;
 import aivle.dog.domain.board.dto.BoardResponseDto;
 import aivle.dog.domain.board.dto.CommentResponseDto;
 import aivle.dog.domain.board.entity.Board;
+import aivle.dog.domain.board.entity.InquiryType;
 import aivle.dog.domain.board.repository.BoardRepository;
 import aivle.dog.domain.board.repository.CommentRepository;
 import aivle.dog.domain.user.entity.User;
 import aivle.dog.domain.user.repository.UserRepository;
+import aivle.dog.global.enums.EnumValueConvertUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +38,7 @@ public class BoardService {
                 .orElseThrow(() -> new RuntimeException("없는 사용자입니다"));
 
         boardRepository.save(Board.builder()
+                .inquiryType(EnumValueConvertUtils.ofDesc(InquiryType.class, boardDto.getInquiryType()))
                 .title(boardDto.getTitle())
                 .description(boardDto.getDescription())
                 .viewCount(0L)

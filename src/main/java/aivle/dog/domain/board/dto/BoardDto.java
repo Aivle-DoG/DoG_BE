@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class BoardDto {
+    private String inquiryType;
     private String title;
     private String description;
 }
