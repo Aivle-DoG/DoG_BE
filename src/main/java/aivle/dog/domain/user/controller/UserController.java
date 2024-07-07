@@ -36,7 +36,9 @@ public class UserController {
         } catch (Exception e) {
             log.error("UserController/signUp : " + e.getMessage(), e);
             message.setMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(message);
         }
         return ResponseEntity.ok(message);
+
     }
 }

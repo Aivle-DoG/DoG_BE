@@ -34,6 +34,7 @@ public class BoardController {
         } catch (Exception e) {
             log.error("BoardController/postBoard : " + e.getMessage(), e);
             message.setMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(message);
         }
         return ResponseEntity.ok(message);
     }
@@ -53,6 +54,7 @@ public class BoardController {
         } catch (Exception e) {
             log.error("BoardController/getBoard : " + e.getMessage(), e);
             message.setMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(message);
         }
         return ResponseEntity.ok(message);
     }
@@ -72,6 +74,7 @@ public class BoardController {
         } catch (Exception e) {
             log.error("BoardController/patchBoard : " + e.getMessage(), e);
             message.setMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(message);
         }
         return ResponseEntity.ok(message);
     }
@@ -91,6 +94,7 @@ public class BoardController {
         } catch (Exception e) {
             log.error("BoardController/deleteBoard : " + e.getMessage(), e);
             message.setMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(message);
         }
         return ResponseEntity.ok(message);
     }
