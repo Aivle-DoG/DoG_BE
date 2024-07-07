@@ -1,12 +1,15 @@
 package aivle.dog.domain.board.controller;
 
 import aivle.dog.domain.board.dto.BoardDto;
+import aivle.dog.domain.board.dto.BoardListResponseDto;
 import aivle.dog.domain.board.dto.BoardResponseDto;
 import aivle.dog.domain.board.service.BoardService;
 import aivle.dog.domain.user.dto.CustomUserDetails;
 import aivle.dog.global.Message;
 import aivle.dog.global.StateEnum;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -14,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Log4j2
 @Controller
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/board")
 public class BoardController {
     private final BoardService boardService;
 
@@ -22,7 +25,7 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-    @PostMapping("/board")
+    @PostMapping
     public ResponseEntity<Message> postBoard(@RequestBody BoardDto boardDto, @AuthenticationPrincipal CustomUserDetails user) {
         log.info("BoardController/postBoard : " + boardDto);
         log.info("BoardController/postBoard : " + user.getUsername());
@@ -41,7 +44,7 @@ public class BoardController {
         return ResponseEntity.ok(message);
     }
 
-    @GetMapping("/board/{boardId}")
+    @GetMapping("/{boardId}")
     public ResponseEntity<Message> getBoard(@PathVariable("boardId") Long boardId) {
         log.info("BoardController/getBoard : " + boardId);
 
@@ -61,7 +64,7 @@ public class BoardController {
         return ResponseEntity.ok(message);
     }
 
-    @PatchMapping("/board/{boardId}")
+    @PatchMapping("/{boardId}")
     public ResponseEntity<Message> patchBoard(@PathVariable Long boardId, @RequestBody BoardDto boardDto, @AuthenticationPrincipal CustomUserDetails user) {
         log.info("BoardController/patchBoard = boardDto : " + boardDto);
         log.info("BoardController/patchBoard = boardId : " + boardId);
@@ -82,7 +85,7 @@ public class BoardController {
         return ResponseEntity.ok(message);
     }
 
-    @DeleteMapping("/board/{boardId}")
+    @DeleteMapping("/{boardId}")
     public ResponseEntity<Message> deleteBoard(@PathVariable Long boardId, @AuthenticationPrincipal CustomUserDetails user) {
         log.info("BoardController/deleteBoard =  boardId : " + boardId);
         log.info("BoardController/deleteBoard =  user : " + user.getUsername());
@@ -95,6 +98,24 @@ public class BoardController {
             message.setData(String.valueOf(code));
         } catch (Exception e) {
             log.error("BoardController/deleteBoard : " + e.getMessage(), e);
+            message.setMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(message);
+        }
+        return ResponseEntity.ok(message);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<Message> getBoardList(Pageable pageable) {
+        log.info("BoardController/getBoardList =  page : " + pageable);
+        Message message = new Message();
+
+        try {
+            Page<BoardListResponseDto> paging = boardService.getBoardList(pageable);
+            message.setStatus(StateEnum.OK);
+            message.setMessage("게시글 리스트 조회 성공");
+            message.setData(paging);
+        } catch (Exception e) {
+            log.error("BoardController/getBoardList : " + e.getMessage(), e);
             message.setMessage(e.getMessage());
             return ResponseEntity.badRequest().body(message);
         }

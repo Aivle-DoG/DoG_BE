@@ -1,12 +1,15 @@
 package aivle.dog.domain.board.service;
 
 import aivle.dog.domain.board.dto.BoardDto;
+import aivle.dog.domain.board.dto.BoardListResponseDto;
 import aivle.dog.domain.board.dto.BoardResponseDto;
 import aivle.dog.domain.board.entity.Board;
 import aivle.dog.domain.board.repository.BoardRepository;
 import aivle.dog.domain.user.entity.User;
 import aivle.dog.domain.user.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +66,7 @@ public class BoardService {
         return 0;
     }
 
+    @Transactional
     public int deleteBoard(Long boardId, String username) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("없는 게시글입니다"));
@@ -78,6 +82,12 @@ public class BoardService {
         return 0;
     }
 
+    @Transactional(readOnly = true)
+    public Page<BoardListResponseDto> getBoardList(Pageable pageable) {
+        return boardRepository.getBoardList(pageable);
+    }
+
+    @Transactional
     public void updateViewCount(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("없는 게시글입니다"));
