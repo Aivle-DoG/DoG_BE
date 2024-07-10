@@ -1,8 +1,8 @@
 package aivle.dog.security.config;
 
-import aivle.dog.security.jwt.JWTFilter;
-import aivle.dog.security.jwt.JWTUtil;
-import aivle.dog.security.jwt.LoginFilter;
+import aivle.dog.security.filter.JWTFilter;
+import aivle.dog.security.filter.LoginFilter;
+import aivle.dog.security.util.JWTUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -62,6 +62,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/login", "/api/*/admin/signup", "/api/*/signup").permitAll()
+                        .requestMatchers("/api/*/email/*").permitAll()
                         .requestMatchers("/api/*/admin/*").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated());
 
