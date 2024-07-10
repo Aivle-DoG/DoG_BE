@@ -1,6 +1,7 @@
-package aivle.dog.security.jwt;
+package aivle.dog.security.filter;
 
 import aivle.dog.domain.user.dto.LoginDto;
+import aivle.dog.security.util.JWTUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletInputStream;

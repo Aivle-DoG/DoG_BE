@@ -1,9 +1,10 @@
-package aivle.dog.security.jwt;
+package aivle.dog.security.filter;
 
 import aivle.dog.domain.user.dto.CustomAdminDetails;
 import aivle.dog.domain.user.dto.CustomUserDetails;
 import aivle.dog.domain.user.entity.Admin;
 import aivle.dog.domain.user.entity.User;
+import aivle.dog.security.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -80,7 +81,7 @@ public class JWTFilter extends OncePerRequestFilter {
             Admin admin = Admin.builder().username(username).password("temppassword").build();
             CustomAdminDetails customAdminDetails = new CustomAdminDetails(admin);
             authToken = new UsernamePasswordAuthenticationToken(customAdminDetails, null, customAdminDetails.getAuthorities());
-        } else{
+        } else {
             log.info("올바르지 않은 권한");
         }
         //세션에 사용자 등록

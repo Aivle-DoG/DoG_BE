@@ -1,4 +1,4 @@
-package aivle.dog.security.jwt;
+package aivle.dog.security.util;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
