@@ -1,5 +1,6 @@
 package aivle.dog.domain.user.controller;
 
+import aivle.dog.domain.user.dto.PasswordDto;
 import aivle.dog.domain.user.dto.UserSignupDto;
 import aivle.dog.domain.user.service.UserService;
 import aivle.dog.global.Message;
@@ -41,4 +42,24 @@ public class UserController {
         return ResponseEntity.ok(message);
 
     }
+
+    @PostMapping("/user/password")
+    public ResponseEntity<Message> findPassword(@RequestBody PasswordDto passwordDto) {
+        log.info("UserController/findPassword :" + passwordDto);
+
+        Message message = new Message();
+
+        try {
+            int code = userService.updatePassword(passwordDto);
+            message.setStatus(StateEnum.OK);
+            message.setMessage("비밀번호 변경 성공");
+            message.setData(code);
+        } catch (Exception e) {
+            log.error("UserController/findPassword : " + e.getMessage(), e);
+            message.setMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(message);
+        }
+        return ResponseEntity.ok(message);
+    }
+
 }

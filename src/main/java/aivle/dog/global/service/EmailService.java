@@ -44,7 +44,7 @@ public class EmailService {
             redisUtil.deleteData(toEmail);
         }
         String authCode = createCode(6);
-
+        log.info("EmailService/sendEmail : " + authCode);
         SimpleMailMessage message = new SimpleMailMessage();
 
         message.setTo(toEmail);
@@ -70,6 +70,10 @@ public class EmailService {
         if (codeFoundByEmail == null) {
             return false;
         }
-        return codeFoundByEmail.equals(code);
+        boolean isVerify = codeFoundByEmail.equals(code);
+        if (isVerify) {
+            redisUtil.setData(email, "true");
+        }
+        return isVerify;
     }
 }

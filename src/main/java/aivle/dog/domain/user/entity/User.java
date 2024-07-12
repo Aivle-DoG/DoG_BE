@@ -34,7 +34,7 @@ public class User extends BaseTimeEntity {
     private String password;
 
     @NotNull
-    @Column(length=10)
+    @Column(length = 10)
     private String name;
 
     @NotNull
@@ -42,10 +42,18 @@ public class User extends BaseTimeEntity {
     private String phoneNumber;
 
     @Builder
-    public User(String username, String password, String name, String phoneNumber){
+    public User(String username, String password, String name, String phoneNumber) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.phoneNumber = phoneNumber;
     }
+
+    public User updatePassword(String password) {
+        if (password != null) {
+            this.password = password;
+        }
+        return this;
+    }
+
 }
