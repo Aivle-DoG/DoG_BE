@@ -34,20 +34,21 @@ public class User extends BaseTimeEntity {
     private String password;
 
     @NotNull
-    @Column(length = 10)
-    private String name;
+    @Column(name = "company_name")
+    private String companyName;
 
     @NotNull
-    @Column(name = "phone_number", length = 15)
-    private String phoneNumber;
+    @Column(name = "business_number", length = 15)
+    private String businessNumber;
 
     @Builder
-    public User(String username, String password, String name, String phoneNumber) {
+    public User(@NotNull String username, @NotNull String password, @NotNull String companyName, @NotNull String businessNumber) {
         this.username = username;
         this.password = password;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
+        this.companyName = companyName;
+        this.businessNumber = businessNumber;
     }
+
 
     public User updatePassword(String password) {
         if (password != null) {

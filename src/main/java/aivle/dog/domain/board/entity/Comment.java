@@ -26,7 +26,7 @@ public class Comment extends BaseTimeEntity {
     private Long id;
 
     @NotNull
-    @Column(length = 10)
+    @Column(length = 50)
     private String name;
 
     @NotNull

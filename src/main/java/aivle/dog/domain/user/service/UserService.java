@@ -39,8 +39,8 @@ public class UserService {
         userRepository.save(User.builder()
                 .username(userSignupDto.getUsername())
                 .password(bCryptPasswordEncoder.encode(userSignupDto.getPassword()))
-                .name(userSignupDto.getName())
-                .phoneNumber(userSignupDto.getPhoneNumber()).build());
+                .companyName(userSignupDto.getCompanyName())
+                .businessNumber(userSignupDto.getBusinessNumber()).build());
         return 0;
     }
 

@@ -49,7 +49,7 @@ public class CommentService {
         } else {
             // 사용자가 작성하는 경우
             commentRepository.save(Comment.builder()
-                    .name(user.get().getName())
+                    .name(user.get().getCompanyName())
                     .description(commentDto.getDescription())
                     .board(board)
                     .user(user.get())
