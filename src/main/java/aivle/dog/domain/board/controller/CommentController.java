@@ -9,9 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Log4j2
 @Controller
@@ -41,4 +39,24 @@ public class CommentController {
         }
         return ResponseEntity.ok(message);
     }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Message> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetails user) {
+        log.info("CommentController/deleteComment : " + commentId);
+        log.info("CommentController/deleteComment : " + user.getUsername());
+
+        Message message = new Message();
+        try {
+            int code = commentService.deleteComment(commentId,user.getUsername());
+            message.setStatus(StateEnum.OK);
+            message.setMessage("댓글 삭제 성공");
+            message.setData(String.valueOf(code));
+        } catch (Exception e) {
+            log.error("CommentController/deleteComment : " + e.getMessage(), e);
+            message.setMessage(e.getMessage());
+            return ResponseEntity.badRequest().body(message);
+        }
+        return ResponseEntity.ok(message);
+    }
+
 }

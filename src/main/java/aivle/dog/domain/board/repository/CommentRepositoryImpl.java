@@ -22,6 +22,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         // 댓글 테이블의 boardId에 해당하는 댓글들을 수정일자를 기준으로 오름차순으로 정렬해서 리턴
         return queryFactory
                 .select(Projections.constructor(CommentResponseDto.class,
+                        comment.id,
                         comment.name,
                         comment.description,
                         comment.modifiedAt))

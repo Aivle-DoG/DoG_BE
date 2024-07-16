@@ -58,4 +58,19 @@ public class CommentService {
         return 0;
     }
 
+    @Transactional
+    public int deleteComment(Long commentId, String username) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("없는 댓글입니다"));
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("없는 사용자입니다"));
+
+        if (!comment.getUser().getUsername().equals(user.getUsername()))
+            throw new RuntimeException("작성자와 삭제자가 다릅니다");
+
+        commentRepository.deleteById(commentId);
+
+        return 0;
+    }
 }
