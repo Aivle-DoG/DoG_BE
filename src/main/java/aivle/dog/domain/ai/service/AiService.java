@@ -7,8 +7,6 @@ import aivle.dog.domain.ai.repository.ChatBotRepository;
 import aivle.dog.domain.ai.repository.WasteImageRepository;
 import aivle.dog.domain.user.entity.User;
 import aivle.dog.domain.user.repository.UserRepository;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -70,6 +68,7 @@ public class AiService {
         // Body 생성
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("file", fileAsResource);
+        body.add("com_name", user != null ? user.getUsername() : "");
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         // ai 서버로 요청 보내기
@@ -142,36 +141,26 @@ public class AiService {
     }
 
     @Transactional
-    public List<FacilityResponseDto> getFacility(String region) {
+    public List<FacilityResponseDto> getFacility(String region, String folderName) {
         String aiServerUrl = String.format("%s/recommendation?region_city=%s", myAiBaseUrl, region);
         RestTemplate restTemplate = new RestTemplate();
 
         // 헤더 생성
-        HttpHeaders header = new HttpHeaders();
-        header.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
+        // 요청 바디 생성
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("com_name", folderName);
 
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(header);
-//        FacilityListResponseDto response = restTemplate.postForObject(aiServerUrl, requestEntity, FacilityListResponseDto.class);
-        String jsonResponse = restTemplate.postForObject(aiServerUrl, requestEntity, String.class);
-        log.info("AiService/getFacility : " + jsonResponse);
+        // HttpEntity 생성
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+        // 요청 보내기 및 응답 받기
+        ResponseEntity<FacilityListResponseDto> response = restTemplate.postForEntity(aiServerUrl, requestEntity, FacilityListResponseDto.class);
 
-        FacilityListResponseDto response;
-        try {
-            response = objectMapper.readValue(jsonResponse, FacilityListResponseDto.class);
-        } catch (Exception e) {
-            log.error("Error while parsing JSON response: ", e);
-            throw new RuntimeException("Error while parsing JSON response", e);
-        }
-        if (response == null)
-            throw new RuntimeException("응답 값이 없습니다");
-        else if (response.getMatching_companies() == null)
-            throw new RuntimeException("응답 값이 없습니다");
-
-        log.info(response.toString());
-        return response.getMatching_companies();
+        // 응답에서 데이터 추출
+        assert response.getBody() != null;
+        return response.getBody().getMatching_companies();
     }
 }

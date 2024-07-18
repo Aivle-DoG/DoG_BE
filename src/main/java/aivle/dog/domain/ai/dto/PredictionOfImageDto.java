@@ -15,4 +15,5 @@ public class PredictionOfImageDto {
     private String csv1;
     private String csv2;
     private List<StatisticSummaryDto> csv_str_st;
+    private String folder_name;
 }

@@ -1,9 +1,6 @@
 package aivle.dog.domain.ai.controller;
 
-import aivle.dog.domain.ai.dto.FacilityResponseDto;
-import aivle.dog.domain.ai.dto.GptRequestDto;
-import aivle.dog.domain.ai.dto.PredictionOfImageDto;
-import aivle.dog.domain.ai.dto.PredictionOfWasteDto;
+import aivle.dog.domain.ai.dto.*;
 import aivle.dog.domain.ai.service.AiService;
 import aivle.dog.global.Message;
 import aivle.dog.global.StateEnum;
@@ -82,13 +79,13 @@ public class AiController {
         return ResponseEntity.ok(message);
     }
 
-    @GetMapping("/facility")
-    public ResponseEntity<Message> getFacility(@RequestParam String region) {
-        log.info("AiController/getFacility : " + region);
+    @PostMapping("/facility")
+    public ResponseEntity<Message> getFacility(@RequestBody FacilityRequestDto facilityRequestDto) {
+        log.info("AiController/getFacility : " + facilityRequestDto);
 
         Message message = new Message();
         try {
-            List<FacilityResponseDto> answer = aiService.getFacility(region);
+            List<FacilityResponseDto> answer = aiService.getFacility(facilityRequestDto.getRegion(), facilityRequestDto.getFolderName());
             message.setStatus(StateEnum.OK);
             message.setMessage("업체 추천 완료");
             message.setData(answer);
