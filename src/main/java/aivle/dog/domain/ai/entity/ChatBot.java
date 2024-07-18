@@ -25,17 +25,13 @@ public class ChatBot extends BaseTimeEntity {
     @Column
     private String question;
 
-    @Column
-    private String answer;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @Builder
-    public ChatBot(String question, String answer, User user) {
+    public ChatBot(String question, User user) {
         this.question = question;
-        this.answer = answer;
         this.user = user;
     }
 }

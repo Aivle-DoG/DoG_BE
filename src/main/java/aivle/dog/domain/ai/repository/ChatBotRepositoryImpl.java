@@ -22,7 +22,6 @@ public class ChatBotRepositoryImpl implements ChatBotRepositoryCustom {
         return queryFactory
                 .select(Projections.constructor(ChatBotListResponseDto.class,
                         chatBot.question,
-                        chatBot.answer,
                         chatBot.user.username,
                         chatBot.user.companyName))
                 .from(chatBot)

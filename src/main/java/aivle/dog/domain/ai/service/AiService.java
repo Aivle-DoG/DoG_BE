@@ -134,7 +134,6 @@ public class AiService {
                     .orElseThrow(() -> new RuntimeException("없는 사용자입니다"));
             chatBotRepository.save(ChatBot.builder()
                     .question(question)
-                    .answer(response.getResponse())
                     .user(lookupUser)
                     .build());
         }

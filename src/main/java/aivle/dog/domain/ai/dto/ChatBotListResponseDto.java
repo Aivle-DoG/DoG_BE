@@ -9,7 +9,6 @@ import lombok.*;
 @Builder
 public class ChatBotListResponseDto {
     private String question;
-    private String answer;
     private String username;
     private String companyName;
 }
