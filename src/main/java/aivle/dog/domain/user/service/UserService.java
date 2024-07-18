@@ -48,6 +48,8 @@ public class UserService {
         User user = userRepository.findByUsername(passwordDto.getUsername())
                 .orElseThrow(() -> new RuntimeException("없는 사용자입니다"));
         String isPossible = redisUtil.getData(passwordDto.getUsername());
+        if(isPossible == null)
+            throw new RuntimeException("비밀번호를 바꿀 수 없습니다");
         if (!isPossible.equals("true"))
             throw new RuntimeException("비밀번호를 바꿀 수 없습니다");
         userRepository.save(user.updatePassword(
