@@ -25,10 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Log4j2
 @Service
@@ -95,18 +92,18 @@ public class AiService {
         HttpHeaders header = new HttpHeaders();
         header.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
 
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("공사명", predictionOfWasteDto.getConstructionSiteName());
-        requestBody.put("공사 종류", predictionOfWasteDto.getConstructionSiteType());
-        requestBody.put("폐기물 종류", predictionOfWasteDto.getWasteType());
-        requestBody.put("시작일", predictionOfWasteDto.getStartDate().toString());
-        requestBody.put("종료일", predictionOfWasteDto.getEndDate().toString());
+        Map<String, Object> requestBody = new LinkedHashMap<>();
+        requestBody.put("연면적(㎡)", Collections.singletonList(Integer.parseInt(predictionOfWasteDto.getTotalFloorArea())));
+        requestBody.put("총 층수", Collections.singletonList(Integer.parseInt(predictionOfWasteDto.getTotalFloors())));
+        requestBody.put("공사 기간(개월)", Collections.singletonList(Integer.parseInt(predictionOfWasteDto.getConstructionPeriod())));
+        requestBody.put("구조", predictionOfWasteDto.getStructure());
+        requestBody.put("용도", predictionOfWasteDto.getUsage());
 
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, header);
         WasteResponseDto wasteResponseDto = restTemplate.postForObject(aiServerUrl, requestEntity, WasteResponseDto.class);
         if (wasteResponseDto == null)
             throw new RuntimeException("예측 값이 없습니다");
-        return wasteResponseDto.getPredicted_amount();
+        return wasteResponseDto.getPredicted_amount().get(0).toString();
     }
 
     @Transactional
