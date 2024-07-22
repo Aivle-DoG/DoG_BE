@@ -9,7 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -24,7 +27,7 @@ public class AiController {
         this.aiService = aiService;
     }
 
-    @GetMapping("/image")
+    @PostMapping("/image")
     public ResponseEntity<Message> predictImage(@RequestPart(value = "file", required = false) MultipartFile file, @AuthenticationPrincipal UserDetails user) {
         log.info("AiController/predictImage : " + file);
         log.info("AiController/predictImage : " + (user == null ? null : user.getUsername()));
