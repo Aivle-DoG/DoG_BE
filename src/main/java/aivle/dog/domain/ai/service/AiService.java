@@ -139,7 +139,7 @@ public class AiService {
 
     @Transactional
     public List<FacilityResponseDto> getFacility(String region, String folderName) {
-        String aiServerUrl = String.format("%s/recommendation?region_city=%s", myAiBaseUrl, region);
+        String aiServerUrl = String.format("%s/recommendation", myAiBaseUrl);
         RestTemplate restTemplate = new RestTemplate();
 
         // 헤더 생성
@@ -148,6 +148,7 @@ public class AiService {
 
         // 요청 바디 생성
         Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("city", region);
         requestBody.put("com_name", folderName);
 
         // HttpEntity 생성
