@@ -11,6 +11,7 @@ import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -46,6 +47,9 @@ public class Board extends BaseTimeEntity {
     @NotNull
     @Column(name = "view_count")
     private Long viewCount;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 
     @Builder
     public Board(User user, InquiryType inquiryType, String title, String description, Long viewCount) {
