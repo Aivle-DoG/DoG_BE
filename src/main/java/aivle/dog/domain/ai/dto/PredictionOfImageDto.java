@@ -11,7 +11,9 @@ import java.util.List;
 @Builder
 public class PredictionOfImageDto {
     private String zipUrl;
-    private String image;
+    private String image1;
+    private String image2;
+    private String image3;
     private String csv1;
     private String csv2;
     private List<StatisticSummaryDto> csv_str_st;
